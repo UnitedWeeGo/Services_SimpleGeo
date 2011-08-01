@@ -347,8 +347,11 @@ class Services_SimpleGeo
     public function addPlace(array $feature, $private = false)
     {
         $version = '1.0';
+        $endpoint = $version . '/features';
+        $url = $this->_getURL($endpoint);
+        $feature["properties"]["private"] = $private;
         $result = $this->_sendRequestWithBody(
-            $version . '/places', json_encode($feature), 'POST'
+            $url, json_encode($feature), 'POST'
         );
 
         return @json_decode($result->getBody());
@@ -385,13 +388,13 @@ class Services_SimpleGeo
     public function editPlace($handle, array $feature, $private = false)
     {
         $version = '1.0';
-        $result = $this->_sendRequestWithBody(
-            $version . '/places/' . $handle . '.json', json_encode($feature), 'POST'
-        );
-
+		$endpoint = $version . '/features/' . $handle . '.json';
+		$url = $this->_getURL($endpoint);		
+		$feature["properties"]["private"] = $private;		
+        $result = $this->_sendRequestWithBody($url, json_encode($feature), 'POST');
         return @json_decode($result->getBody());
     }
-
+	
     /**
      * Do a nearby search for SimpleGeo Places
      *
